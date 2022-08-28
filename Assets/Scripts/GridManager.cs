@@ -5,31 +5,28 @@ using UnityEngine;
 public class GridManager : MonoBehaviour
 {
     
-    [SerializeField] private GridSpace[] gridSpaces;
-    private int[,] gridValues; // 0 None, 1 Blue, 2 Green, 3 Yellow
-    public int gridSizeX = 10;
-    public int gridSizeZ = 10;
+    [SerializeField] private GridSpace[] gridSpaceTypes;
+    private int[,] gridValues; // -1 None, 0 Blue, 1 Green, 2 Yellow
+    private List<GridSpace> grid;
     
-    // Start is called before the first frame update
-    void Start()
-    {   
+    public void GenerateMap(int gridSizeX, int gridSizeZ){  
+        grid = new List<GridSpace>(); 
         CreateGrid(gridSizeX, gridSizeZ);
-        Spawn();
+        Spawn(gridSizeX, gridSizeZ);
     }
-
 
     //Creates an empty grid of a defined size and perminates it with a default value
     private void CreateGrid(int x, int y){
         gridValues = new int[x,y];
         for (int i = 0; i < x; i ++){
             for (int j = 0; j < y; j++){
-                gridValues[i,j] = 0;
+                gridValues[i,j] = -1;
             }
         }
     }
 
     //Instantiates a grid by placeing objects on the grid of varying sizes, and then fills the rest of the space with 1x1 tiles
-    private void Spawn() {
+    private void Spawn(int gridSizeX, int gridSizeZ) {
         int x = gridSizeX;
         int z = gridSizeZ;
 
@@ -37,7 +34,7 @@ public class GridManager : MonoBehaviour
         //For loop for placing objects
         for (int s = 0; s < starts; s++){
             int length = Random.Range(0, 3);
-            int size = gridSpaces[length].objectSize;
+            int size = gridSpaceTypes[length].objectSize;
             int fails = 0;
             bool success = false;
             //5 attempts to succeed, otherwise moves on to the next object
@@ -51,7 +48,7 @@ public class GridManager : MonoBehaviour
                         if (i >= x || j >= z){
                             fail = true;
                         }
-                        else if (gridValues[i, j] != 0){
+                        else if (gridValues[i, j] != -1){
                             fail = true;
                         }
                     }
@@ -62,7 +59,7 @@ public class GridManager : MonoBehaviour
                     success = true;
                     for (int i = startX; i < startX+size; i++){
                         for (int j = startZ; j < startZ+size; j++){
-                            gridValues[i,j] = size;
+                            gridValues[i,j] = size-1;
                         }
                     }
                 }
@@ -71,10 +68,14 @@ public class GridManager : MonoBehaviour
         //After placing all objects, fill remaining values with a 1x1 and create all objects in game space
         for (int i = 0; i < x; i++){
             for (int j = 0; j < z; j++){
-                if (gridValues[i,j] == 0) {gridValues[i,j] = 1;}
-                Instantiate(gridSpaces[gridValues[i,j]-1], new Vector3(i, 0, j), Quaternion.identity);
+                if (gridValues[i,j] == -1) {gridValues[i,j] = 0;}
+                grid.Add(Instantiate(gridSpaceTypes[gridValues[i,j]], new Vector3(i, 0, j), Quaternion.identity));                
             }
         }
+    }
+
+    public List<GridSpace> GetGrid(){
+        return grid;
     }
 
 }

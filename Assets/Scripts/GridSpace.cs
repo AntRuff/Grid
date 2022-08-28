@@ -10,22 +10,27 @@ public class GridSpace : MonoBehaviour
     [SerializeField]private GameObject glow;
 
     void Start(){
-        //glow.SetActive(false);
         player = null;
     }
 
     public void SetPlayer(PlayerManager p){
         player = p;
         player.transform.position = playerPoint.position;
-        glow.SetActive(true);
     }
     
     public void RemovePlayer(){
-        glow.SetActive(false);
         player = null;
     }
 
     public PlayerManager GetPlayer(){
         return player;
+    }
+
+    public void GlowOn(){
+        glow.SetActive(true);
+    }
+
+    public void GlowOff(){
+        glow.SetActive(false);
     }
 }

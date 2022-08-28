@@ -342,4 +342,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 075938f4841a1a74292c8a8cf743119e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSpace: {fileID: 623414061623132140, guid: 0106eac87ee476e4ea709ed436a4c705, type: 3}
+  gridSpaces:
+  - {fileID: 2460638148884251468, guid: 0106eac87ee476e4ea709ed436a4c705, type: 3}
+  - {fileID: -6510889346726600304, guid: 998e74924c539984c8d8b8b8825e4b4e, type: 3}
+  - {fileID: -8304884241137079989, guid: bf3f395c67424884a875a83c4cb4c6f2, type: 3}
+  gridSizeX: 10
+  gridSizeZ: 10

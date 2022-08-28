@@ -14,12 +14,14 @@ public class GameManager : MonoBehaviour
     private GridSpace lastHit;
 
 
+    //Initialize the grid and place player at the first space
     private void Start() {
         lastHit = null;
         grid.GenerateMap(gridSizeX, gridSizeZ);
         grid.GetGrid()[0].SetPlayer(player);
     }
 
+    //Every frame, cast ray from mouse and highlight the space it hits
     private void Update() {
         ray = Camera.main.ScreenPointToRay (Input.mousePosition);
         if (Physics.Raycast(ray, out hit, 100)){

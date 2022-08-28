@@ -74,6 +74,7 @@ public class GridManager : MonoBehaviour
         }
     }
 
+    //Returns the list of grid spaces
     public List<GridSpace> GetGrid(){
         return grid;
     }

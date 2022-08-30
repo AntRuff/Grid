@@ -69,7 +69,8 @@ public class GridManager : MonoBehaviour
         for (int i = 0; i < x; i++){
             for (int j = 0; j < z; j++){
                 if (gridValues[i,j] == -1) {gridValues[i,j] = 0;}
-                grid.Add(Instantiate(gridSpaceTypes[gridValues[i,j]], new Vector3(i, 0, j), Quaternion.identity));                
+                grid.Add(Instantiate(gridSpaceTypes[gridValues[i,j]], new Vector3(i, 0, j), Quaternion.identity));
+                grid[(i*gridSizeX)+j].SetPos(x, z);                
             }
         }
     }
@@ -78,5 +79,4 @@ public class GridManager : MonoBehaviour
     public List<GridSpace> GetGrid(){
         return grid;
     }
-
 }

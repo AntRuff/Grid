@@ -4,5 +4,27 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-    //Empty for now. Will add more once player controls are added
+    [SerializeField]private Behaviour glow;
+    private GridSpace curSpace;
+
+    private void Start() {
+        DisableHalo();
+    }
+
+    public void EnableHalo() {
+        glow.enabled = true;
+    }
+
+    public void DisableHalo() {
+        glow.enabled = false;
+    }
+    
+    public GridSpace GetCurrentSpace() {
+        return curSpace;
+    }
+
+    public void SetCurrentSpace(GridSpace newGridSpace) {
+        curSpace = newGridSpace;
+        transform.position = curSpace.GetPlayerPosition().position;
+    }
 }

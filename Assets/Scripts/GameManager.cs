@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private GridManager grid;
     [SerializeField] private PlayerManager playerPrefab;
+    [SerializeField] private Pointer point;
     [SerializeField] private int gridSizeX;
     [SerializeField] private int gridSizeZ;
 
@@ -24,9 +25,14 @@ public class GameManager : MonoBehaviour
         grid.GenerateMap(gridSizeX, gridSizeZ);
         for (int i = 0; i < startingPlayers; i++){
             PlayerManager newPlayer = Instantiate(playerPrefab);
-            int x = Random.Range(0, gridSizeX) * gridSizeX;
-            int z = Random.Range(0, gridSizeZ);
-            newPlayer.SetCurrentSpace(grid.GetGrid()[x+z]);
+            int fail = 0;
+            bool success = false;
+            while (fail < 100 && !success) {
+                int x = Random.Range(0, gridSizeX) * gridSizeX;
+                int z = Random.Range(0, gridSizeZ);
+                if (grid.GetGrid()[x+z].HasPlayer()) {fail++;}
+                else {success = true; newPlayer.SetCurrentSpace(grid.GetGrid()[x+z]);}
+            }
         }
 
 
@@ -47,8 +53,8 @@ public class GameManager : MonoBehaviour
                     if (!lastHit.HasPlayer()) {
                         lastHit.GivePlayer();
                         lastPlayer.SetCurrentSpace(lastHit);
-                        Debug.Log("Hit");
                         lastHit.GlowOff();
+                        point.ResetPosition();
                         lastHit = null;
                         playerSelected = false;
                     }
@@ -103,12 +109,14 @@ public class GameManager : MonoBehaviour
                     }
                     lastHit = hit.collider.gameObject.GetComponent<GridSpace>();
                     lastHit.GlowOn();
+                    point.UpdatePosition(lastHit.GetPlayerPosition());
                 }
             }
             else {
                 if (lastHit){
                     lastHit.GlowOff();
                     lastHit = null;
+                    point.ResetPosition();
                 }
             }
         }
@@ -116,6 +124,7 @@ public class GameManager : MonoBehaviour
             if (lastHit){
                 lastHit.GlowOff();
                 lastHit = null;
+                point.ResetPosition();
             }
         }
     }

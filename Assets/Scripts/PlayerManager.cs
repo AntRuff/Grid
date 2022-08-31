@@ -20,11 +20,8 @@ public class PlayerManager : MonoBehaviour
     }
 
     public void SetCurrentSpace(GridSpace newGridSpace) {
-        Debug.Log("Remove Before");
         if (curSpace){curSpace.RemovePlayer();}
-        Debug.Log("Remove After");
         curSpace = newGridSpace;
-        Debug.Log("Set");
         transform.position = curSpace.GetPlayerPosition().position;
         curSpace.GivePlayer();
     }

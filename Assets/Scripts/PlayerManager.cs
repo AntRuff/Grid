@@ -7,10 +7,6 @@ public class PlayerManager : MonoBehaviour
     [SerializeField]private Behaviour glow;
     private GridSpace curSpace;
 
-    private void Start() {
-        DisableHalo();
-    }
-
     public void EnableHalo() {
         glow.enabled = true;
     }
@@ -24,7 +20,12 @@ public class PlayerManager : MonoBehaviour
     }
 
     public void SetCurrentSpace(GridSpace newGridSpace) {
+        Debug.Log("Remove Before");
+        if (curSpace){curSpace.RemovePlayer();}
+        Debug.Log("Remove After");
         curSpace = newGridSpace;
+        Debug.Log("Set");
         transform.position = curSpace.GetPlayerPosition().position;
+        curSpace.GivePlayer();
     }
 }

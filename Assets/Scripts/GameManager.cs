@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private GridManager grid;
-    [SerializeField] private PlayerManager player;
+    [SerializeField] private PlayerManager playerPrefab;
     [SerializeField] private int gridSizeX;
     [SerializeField] private int gridSizeZ;
 
@@ -15,13 +15,21 @@ public class GameManager : MonoBehaviour
     private PlayerManager lastPlayer;
     private bool playerSelected = false;
 
+    public int startingPlayers = 4;
 
     //Initialize the grid and place player at the first space
     private void Start() {
         lastHit = null;
         lastPlayer = null;
         grid.GenerateMap(gridSizeX, gridSizeZ);
-        grid.GetGrid()[0].SetPlayer(player);
+        for (int i = 0; i < startingPlayers; i++){
+            PlayerManager newPlayer = Instantiate(playerPrefab);
+            int x = Random.Range(0, gridSizeX) * gridSizeX;
+            int z = Random.Range(0, gridSizeZ);
+            newPlayer.SetCurrentSpace(grid.GetGrid()[x+z]);
+        }
+
+
     }
 
     //Every frame, cast ray from mouse and highlight the space it hits
@@ -36,10 +44,14 @@ public class GameManager : MonoBehaviour
                 }
             } else {
                 if (lastHit){
-                    lastPlayer.SetCurrentSpace(lastHit);
-                    lastHit.GlowOff();
-                    lastHit = null;
-                    playerSelected = false;
+                    if (!lastHit.HasPlayer()) {
+                        lastHit.GivePlayer();
+                        lastPlayer.SetCurrentSpace(lastHit);
+                        Debug.Log("Hit");
+                        lastHit.GlowOff();
+                        lastHit = null;
+                        playerSelected = false;
+                    }
                 }
             }
         }
@@ -108,9 +120,3 @@ public class GameManager : MonoBehaviour
         }
     }
 }
-
-
-
-/*else if (hit.collider.gameObject.tag == "Player"){
-    hit.collider.gameObject.GetComponentInParent<PlayerManager>().EnableHalo();
-}*/

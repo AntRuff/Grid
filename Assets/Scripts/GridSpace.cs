@@ -11,6 +11,8 @@ public class GridSpace : MonoBehaviour
     private int xGridPos;
     private int zGridPos;
 
+    private bool hasPlayer = false;
+
 
     void Start(){
         //player = null;
@@ -19,9 +21,8 @@ public class GridSpace : MonoBehaviour
     }
 
     //Sets the player to this space
-    public void SetPlayer(PlayerManager p){
-        //player = p;
-        p.transform.position = playerPoint.position;
+    public void GivePlayer(){
+        hasPlayer = true;
     }
 
     public Transform GetPlayerPosition() {
@@ -30,13 +31,12 @@ public class GridSpace : MonoBehaviour
     
     //Removes player from this space
     public void RemovePlayer(){
-        //player = null;
+        hasPlayer = false;
     }
 
-    //Returns the player at space
-    /*public PlayerManager GetPlayer(){
-        //return player;
-    }*/
+    public bool HasPlayer(){
+        return hasPlayer;
+    }
 
     //Turn the highlight on
     public void GlowOn(){

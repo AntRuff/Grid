@@ -8,16 +8,16 @@ public class GridSpace : MonoBehaviour
     public int objectSize;
     //private PlayerManager player;
     [SerializeField]private GameObject glow;
-    private int xGridPos;
-    private int zGridPos;
+    [SerializeField]private int xGridPos = 0;
+    [SerializeField]private int zGridPos;
 
     private bool hasPlayer = false;
+
+    public int movementCost = 1;
 
 
     void Start(){
         //player = null;
-        xGridPos = 0;
-        zGridPos = 0;
     }
 
     //Sets the player to this space

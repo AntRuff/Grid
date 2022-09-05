@@ -209,6 +209,9 @@ MonoBehaviour:
   playerPoint: {fileID: 51808236661852187}
   objectSize: 2
   glow: {fileID: 4500396676932813400}
+  xGridPos: 0
+  zGridPos: 0
+  movementCost: 2
 --- !u!1 &4500396676932813400
 GameObject:
   m_ObjectHideFlags: 0

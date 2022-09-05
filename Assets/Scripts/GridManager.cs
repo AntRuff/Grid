@@ -8,9 +8,12 @@ public class GridManager : MonoBehaviour
     [SerializeField] private GridSpace[] gridSpaceTypes;
     private int[,] gridValues; // -1 None, 0 Blue, 1 Green, 2 Yellow
     private List<GridSpace> grid;
+    private int gridX, gridZ;
     
     public void GenerateMap(int gridSizeX, int gridSizeZ){  
-        grid = new List<GridSpace>(); 
+        grid = new List<GridSpace>();
+        gridX = gridSizeX;
+        gridZ = gridSizeZ;
         CreateGrid(gridSizeX, gridSizeZ);
         Spawn(gridSizeX, gridSizeZ);
     }
@@ -70,7 +73,7 @@ public class GridManager : MonoBehaviour
             for (int j = 0; j < z; j++){
                 if (gridValues[i,j] == -1) {gridValues[i,j] = 0;}
                 grid.Add(Instantiate(gridSpaceTypes[gridValues[i,j]], new Vector3(i, 0, j), Quaternion.identity));
-                grid[(i*gridSizeX)+j].SetPos(x, z);                
+                grid[(i*gridSizeX)+j].SetPos(i, j);                
             }
         }
     }
@@ -78,5 +81,19 @@ public class GridManager : MonoBehaviour
     //Returns the list of grid spaces
     public List<GridSpace> GetGrid(){
         return grid;
+    }
+
+    public List<GridSpace> ShowRange(int curRange, int xPos, int zPos){
+        List<GridSpace> thisList = new List<GridSpace>();
+        if (xPos < 0 || zPos < 0 || xPos >= gridX || zPos >= gridZ) {return thisList;}
+        int thisIndex = ((xPos*gridX) + zPos);
+        if (grid[thisIndex].HasPlayer()) {return thisList;}
+        if (grid[thisIndex].movementCost > curRange) {return thisList;}
+        thisList.Add(grid[thisIndex]);
+        thisList.AddRange(ShowRange(curRange-grid[thisIndex].movementCost, xPos-1, zPos));
+        thisList.AddRange(ShowRange(curRange-grid[thisIndex].movementCost, xPos, zPos+1));
+        thisList.AddRange(ShowRange(curRange-grid[thisIndex].movementCost, xPos+1, zPos));
+        thisList.AddRange(ShowRange(curRange-grid[thisIndex].movementCost, xPos, zPos-1));
+        return thisList;
     }
 }

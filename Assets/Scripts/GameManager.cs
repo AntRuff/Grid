@@ -16,12 +16,15 @@ public class GameManager : MonoBehaviour
     private PlayerManager lastPlayer;
     private bool playerSelected = false;
 
+    private List<GridSpace> validMoves;
+
     public int startingPlayers = 4;
 
     //Initialize the grid and place player at the first space
     private void Start() {
         lastHit = null;
         lastPlayer = null;
+        validMoves = new List<GridSpace>();
         grid.GenerateMap(gridSizeX, gridSizeZ);
         for (int i = 0; i < startingPlayers; i++){
             PlayerManager newPlayer = Instantiate(playerPrefab);
@@ -47,16 +50,18 @@ public class GameManager : MonoBehaviour
             if (!playerSelected){
                 if (lastPlayer){
                     playerSelected = true;
+                    DisplayRange(lastPlayer);
                 }
             } else {
                 if (lastHit){
                     if (!lastHit.HasPlayer()) {
                         lastHit.GivePlayer();
                         lastPlayer.SetCurrentSpace(lastHit);
-                        lastHit.GlowOff();
+                        //lastHit.GlowOff();
                         point.ResetPosition();
                         lastHit = null;
                         playerSelected = false;
+                        HideRange();
                     }
                 }
             }
@@ -64,9 +69,10 @@ public class GameManager : MonoBehaviour
         if (Input.GetMouseButtonDown(1)){
             if (playerSelected){
                 playerSelected = false;
+                HideRange();
             }
             if (lastHit){
-                lastHit.GlowOff();
+                //lastHit.GlowOff();
                 lastHit = null;
             }
         }
@@ -105,16 +111,18 @@ public class GameManager : MonoBehaviour
             if (hit.collider.gameObject.tag == "GridSpace"){
                 if (hit.collider.gameObject.GetComponent<GridSpace>() != lastHit){
                     if (lastHit){
-                        lastHit.GlowOff();
+                        //lastHit.GlowOff();
                     }
-                    lastHit = hit.collider.gameObject.GetComponent<GridSpace>();
-                    lastHit.GlowOn();
-                    point.UpdatePosition(lastHit.GetPlayerPosition());
+                    if (validMoves.Contains(hit.collider.gameObject.GetComponent<GridSpace>())){
+                        lastHit = hit.collider.gameObject.GetComponent<GridSpace>();
+                        point.UpdatePosition(lastHit.GetPlayerPosition());
+                    }
+                    //lastHit.GlowOn();
                 }
             }
             else {
                 if (lastHit){
-                    lastHit.GlowOff();
+                    //lastHit.GlowOff();
                     lastHit = null;
                     point.ResetPosition();
                 }
@@ -122,10 +130,29 @@ public class GameManager : MonoBehaviour
         }
         else {
             if (lastHit){
-                lastHit.GlowOff();
+                //lastHit.GlowOff();
                 lastHit = null;
                 point.ResetPosition();
             }
         }
+    }
+
+    private void DisplayRange(PlayerManager player){
+        GridSpace startingPos = player.GetCurrentSpace();
+        int startX = startingPos.GetPosX();
+        int startZ = startingPos.GetPosZ();
+
+        validMoves.AddRange(grid.ShowRange(player.movementRange, startX-1, startZ));
+        validMoves.AddRange(grid.ShowRange(player.movementRange, startX, startZ+1));
+        validMoves.AddRange(grid.ShowRange(player.movementRange, startX+1, startZ));
+        validMoves.AddRange(grid.ShowRange(player.movementRange, startX, startZ-1));
+
+        foreach (GridSpace space in validMoves){space.GlowOn();}
+    }
+
+    private void HideRange(){
+        foreach (GridSpace space in validMoves){space.GlowOff();}
+
+        validMoves = new List<GridSpace>();
     }
 }

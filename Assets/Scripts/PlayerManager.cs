@@ -6,6 +6,7 @@ public class PlayerManager : MonoBehaviour
 {
     [SerializeField]private Behaviour glow;
     private GridSpace curSpace;
+    public int movementRange = 3;
 
     public void EnableHalo() {
         glow.enabled = true;
